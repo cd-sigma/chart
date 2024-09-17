@@ -7,7 +7,7 @@ function App() {
     }]);
     const [options, setOptions] = useState({
         chart: {
-            id: 'realtime', height: 350,  type: 'line', animations: {
+            id: 'realtime', height: 350, type: 'line', animations: {
                 enabled: true, easing: 'linear', dynamicAnimation: {
                     speed: 500
                 }
@@ -19,40 +19,49 @@ function App() {
         }, dataLabels: {
             enabled: false
         }, stroke: {
-            curve: 'straight',
-            width: 1
+            curve: 'straight', width: 1
         }, title: {
             text: 'Dynamic Updating Chart', align: 'left'
         }, markers: {
             size: 0
         }, xaxis: {
-            show:false,
-            type: 'datetime', range: 300000
-        }, yaxis: {
-            max: 100
+            show: false, type: 'datetime', range: 30000, axisBorder: {
+                show: false, color: '#10baee'
+            }, axisTicks: {
+                show: false
+            }
         }, legend: {
             show: true
-        },
-        colors: ['#FFFFFF'],
+        }, yaxis: {
+            axisTicks: {
+                show: false,
+            },
+        }, colors: ['#FFFFFF'],
         grid: {
-            show: true,
-            borderColor: '#0C1D31',
-            position: 'back',
-        },
-        fill:{
-            colors: '#FFFFFF',
-            opacity: 0.9,
-            type: 'gradient',
-
-        },
-
+            show: true, borderColor: '#0C1D31', position: 'back',  padding: {
+                top: 0,
+                right: 50,
+                bottom: 0,
+                left: 0
+            },
+        }, fill: {
+            colors: '#FFFFFF', opacity: 0.5, type: 'gradient',
+        }
     });
 
     useEffect(() => {
         const interval = setInterval(() => {
             const newTimestamp = new Date().getTime();
-            const newPrice = Math.floor(Math.random() * (100 - 10 + 1) + 10);
+            const newPrice = Math.floor(Math.random() * (100 - 80 + 1) + 80);
             setSeries([{data: [...series[0].data, [newTimestamp, newPrice]]}]);
+            setOptions({...options,markers: {
+                    size: series[0].data.map((_, index) =>
+                        index === series[0].data.length - 1 ? 6 : 0
+                    ),
+                    colors: ['#FF4560'], // Color of the last point marker
+                    strokeColor: '#fff', // Outline color of the marker
+                    strokeWidth: 2,
+                }});
         }, 1000);
         return () => clearInterval(interval);
     }, [series]);
